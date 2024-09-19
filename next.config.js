@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['via.placeholder.com', 'images.unsplash.com', 'www.pexels.com', 'images.pexels.com'],
+      domains: ['via.placeholder.com', 'images.unsplash.com', 'www.pexels.com', 'images.pexels.com', 'challenges.cloudflare.com'],
     },
     webpack: (config, { isServer }) => {
       if (!isServer) {
@@ -13,6 +13,9 @@ const nextConfig = {
       }
       return config;
     },
-  }
-  
-  module.exports = nextConfig
+    reactStrictMode: true,
+    // Add this line for more detailed error messages during build
+    productionBrowserSourceMaps: true,
+}
+
+module.exports = nextConfig
