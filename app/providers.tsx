@@ -1,6 +1,8 @@
 'use client';
 
+// @ts-ignore
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+// @ts-ignore
 import { SessionContextProvider } from '@supabase/auth-helpers-react'
 import { ThemeProvider } from "@/components/theme-provider"
 import { useState, ReactNode, Component, ErrorInfo } from 'react'
