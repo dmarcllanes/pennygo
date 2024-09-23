@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Zap, Lock, DollarSign, Menu, X, Facebook, Twitter, Instagram, Linkedin, Smile } from "lucide-react"
 import Link from 'next/link'
 import Image from 'next/image'
-import { ThemeToggle } from "./components/ThemeToggle"
+import ThemeToggle from "./components/ThemeToggle"
 import { useRouter } from 'next/navigation'
 
 const StaticBanner = () => {

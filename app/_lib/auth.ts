@@ -1,4 +1,3 @@
-// app/_lib/auth.ts
 import { User } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 
@@ -25,7 +24,7 @@ export async function login(email: string, password: string, captchaToken: strin
     // Verify the captcha token
     const captchaVerification = await verifyCaptcha(captchaToken);
     if (!captchaVerification.success) {
-      throw new Error('Captcha verification failed');
+      throw new Error(captchaVerification.error || 'Captcha verification failed');
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -89,13 +88,28 @@ export async function signup(email: string, password: string, captchaToken: stri
 }
 
 async function verifyCaptcha(token: string) {
-  const response = await fetch('/api/verify-captcha', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token }),
-  });
-  return response.json();
+  try {
+    const response = await fetch('/api/verify-captcha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Captcha verification failed:', errorData);
+      return { success: false, error: errorData.error };
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error during captcha verification:', error);
+    return { success: false, error: 'Captcha verification failed' };
+  }
 }
+
+// Ensure this line exists and is not commented out
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 
 // Modify the checkUserSession function to return UserSessionResult
 export async function checkUserSession(): Promise<UserSessionResult> {

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import Script from 'next/script';
+import { ThemeProvider } from 'next-themes';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,10 +18,13 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+    <html lang="en">
+      <body>
+        <ThemeProvider attribute="class">
+          {children}
+        </ThemeProvider>
       </body>
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
     </html>
   );
 }

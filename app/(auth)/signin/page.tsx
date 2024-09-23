@@ -1,14 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { login } from '@/app/_lib/auth';
+import { login } from '@/app/_lib/auth';  // Make sure this path is correct
 import Turnstile from "react-turnstile";
 import AuthLayout from '../auth_components/AuthLayout';
+
+// Update the global declaration to match the expected type
+declare global {
+  interface Window {
+    turnstile: {
+      ready: (callback: () => void) => void;
+      render: (selector: string, options: any) => void;
+    };
+  }
+}
 
 function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +28,7 @@ function SignInForm() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -34,14 +46,18 @@ function SignInForm() {
     }
 
     try {
-      await login(email, password, captchaToken);
-      // Redirect or update UI state on successful sign-in
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      console.log("Attempting login with captcha token:", captchaToken);
+      const loginResult = await login(email, password, captchaToken);
+      console.log("Login result:", loginResult);
+      if (loginResult && loginResult.user) {
+        console.log("Login successful, redirecting to dashboard");
+        router.push('/dashboard');
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError("Login failed. Please check your credentials.");
       }
+    } catch (err) {
+      console.error("Sign-in error:", err);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +112,10 @@ function SignInForm() {
         </div>
         <Turnstile
           sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
-          onVerify={(token) => setCaptchaToken(token)}
+          onVerify={(token) => {
+            console.log("Captcha token received:", token);
+            setCaptchaToken(token);
+          }}
         />
         <Button className="w-full bg-black text-white hover:bg-gray-800" type="submit" disabled={isLoading}>
           {isLoading ? 'Signing In...' : 'Sign In'}
