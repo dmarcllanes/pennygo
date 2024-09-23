@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Script from 'next/script';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +18,10 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body>
-        <ThemeProvider attribute="class">
-          {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />

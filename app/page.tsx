@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Zap, Lock, DollarSign, Menu, X, Facebook, Twitter, Instagram, Linkedin, Smile } from "lucide-react"
 import Link from 'next/link'
 import Image from 'next/image'
-import ThemeToggle from "./components/ThemeToggle"
+import { ThemeToggle } from "@/components/theme-toggle"  // Import the ThemeToggle component
 import { useRouter } from 'next/navigation'
 
 const StaticBanner = () => {
@@ -205,7 +205,7 @@ export default function LandingPage() {
               </nav>
             </div>
             <div className="flex items-center gap-4">
-              <ThemeToggle />
+              <ThemeToggle />  {/* Use the ThemeToggle component here */}
               <Link href="/signin">
                 <button className="hidden md:inline-flex px-6 py-3 text-white rounded-full animate-button text-base font-semibold">
                   Sign In
